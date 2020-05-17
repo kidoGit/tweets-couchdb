@@ -1,5 +1,4 @@
 const express = require('express');
-const app = express();
 const tweetRoute = express.Router();
 const NodeCouchDb = require('node-couchdb');
 
@@ -13,25 +12,23 @@ const couch = new NodeCouchDb({
     }
 });
 
-const dbName = 'tweets';
-// const viewUrl = '_design/all_customers/_view/all';
-const viewUrl = '_design/all/_view/demo-view?limit=20';
+// couch.listDatabases().then((dbs) => {
+//     console.log(dbs);
+// })
 
-// tweetRoute.route('/create').post((req, res, next) => {});
+const dbName = 'tweets';
+const viewUrl = '_design/all/_view/demo-view?limit=20';
 
 
 tweetRoute.route('/').get((req, res) => {
-    console.log('getttttt')
     couch.get(dbName, viewUrl).then((data, headers, status) => {
-        console.log('data: ', data.data.rows);
         res.send(data.data.rows)
-        // res.render('index',  {
-        //     customers: data
-        // });
     }, (err) => {
-        res.send(err);
+        res.send('Something went wrong!');
     })
 })
+
+// tweetRoute.route('/create').post((req, res, next) => {});
 
 // tweetRoute.route('/read/:id').get((req, res) => {})
 

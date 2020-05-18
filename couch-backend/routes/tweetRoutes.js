@@ -16,16 +16,20 @@ const couch = new NodeCouchDb({
 //     console.log(dbs);
 // })
 
+let skip = 0;
+const rowsPerPage = 20;
 const dbName = 'tweets';
-const viewUrl = '_design/all/_view/demo-view?limit=20';
 
+tweetRoute.route('/tweets').get((req, res) => {
+    let page = parseInt(req.query.pageNo);
+    skip = page * rowsPerPage; //
 
-tweetRoute.route('/').get((req, res) => {
-    couch.get(dbName, viewUrl).then((data, headers, status) => {
-        res.send(data.data.rows)
-    }, (err) => {
-        res.send('Something went wrong!');
-    })
+    couch.get(dbName, `_design/all/_view/demo-view?limit=20&skip=${skip}`)
+        .then((data, headers, status) => {
+            res.send(data.data)
+        }, (err) => {
+            res.send('Something went wrong!');
+        })
 })
 
 // tweetRoute.route('/create').post((req, res, next) => {});

@@ -1,3 +1,45 @@
-<button (click)="getData()">Get data</button>
+<div class="btn-class">
+    <button class="btn btn-primary" (click)="getTweets(0)">Get Tweet data</button>
+</div>
 <hr>
-<div>{{tweetData}}</div>
+
+<div class="card text-center m-3" *ngIf="displayTweets.length">
+    <div class="card-body">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">No.</th>
+                    <th>Text</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of displayTweets; let i = index">
+                    <td>{{i}}</td>
+                    <td>{{item.value.text}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer pb-0 pt-3">
+        <ul class="pagination">
+            <li class="page-item first-item">
+                <a class="page-link">First</a>
+            </li>
+            <li class="page-item previous-item" style="cursor: pointer;" (click)="getPreviousTweets()">
+                <a class="page-link">Previous</a>
+            </li>
+            <li class="page-item next-item" style="cursor: pointer;" (click)="getNextTweets()">
+                <a class="page-link">Next</a>
+            </li>
+            <li class="page-item last-item">
+                <a class="page-link">Last</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4" id="scatterContainer"></div>
+    <div class="col-md-4" id="barContainer"></div>
+    <div class="col-md-4" id="pieContainer"></div>
+</div>

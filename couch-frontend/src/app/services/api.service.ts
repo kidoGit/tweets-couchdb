@@ -7,13 +7,13 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
   providedIn: 'root'
 })
 export class ApiService {
-  baseUri:string = 'http://localhost:3001/';
+  baseUri:string = 'http://localhost:3001';
   headers = new HttpHeaders().set('Content-Type', 'application/json');
 
   constructor(private http: HttpClient) { }
 
-  getTweetData() {
-    return this.http.get(`${this.baseUri}`);
+  getTweetData(pageNo) {
+    return this.http.get(`${this.baseUri}/tweets?pageNo=${pageNo}`);
   }
 
   errorMgmt(error: HttpErrorResponse) {

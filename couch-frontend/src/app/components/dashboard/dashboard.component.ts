@@ -50,10 +50,10 @@ export class DashboardComponent implements OnInit {
 
   getTweets(pageNo) {
     if (!this.fetchedRows.includes(pageNo)) {
-      this.fetchedRows.push(pageNo);
       this.apiService.getTweetData(pageNo).subscribe((data: any) => {
         this.tweetData = this.tweetData.concat(data.rows);
         this.setDisplayTweets();
+        this.fetchedRows.push(pageNo);
       });
     } else {
       this.setDisplayTweets();

@@ -43,3 +43,30 @@
     <div class="col-md-4" id="barContainer"></div>
     <div class="col-md-4" id="pieContainer"></div>
 </div>
+<hr>
+
+<!-- to show just a single lat and long coordinate -->
+<!-- <agm-map style="height: 1000px" [latitude]='latitude' [longitude]='longitude'
+    [mapTypeId]='mapType' [zoom]="2" (mapClick)="addMarker($event.coords.lat, $event.coords.lng)"></agm-map> -->
+
+<agm-map style="height: 1000px" [mapTypeId]='mapType' [zoom]="2" (mapClick)="addMarker($event.coords.lat, $event.coords.lng)">
+    <agm-marker
+    *ngFor="let marker of markers"
+    [latitude]="marker.lat"
+    [longitude]="marker.lng"
+    [opacity]="marker.alpha"
+    [markerDraggable]="true"
+    (markerClick)="selectMarker($event)"
+    >
+    </agm-marker>
+    <!-- <agm-rectangle
+    [north]="max('lat')"
+    [east]="max('lng')"
+    [south]="min('lat')"
+    [west]="min('lng')"
+    >
+    </agm-rectangle> -->
+</agm-map>
+<p *ngIf="selectedMarker">
+    Lat: {{ selectedMarker.lat }} Lng: {{ selectedMarker.lng }}
+</p>

@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AgmCoreModule } from '@agm/core';
 
 import { ApiService } from './services/api.service';
 @NgModule({
@@ -15,7 +16,10 @@ import { ApiService } from './services/api.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyBTv9N60m0cJ1yQzUP9LvbgxrnJqUUn8jY'
+    })
   ],
   providers: [ApiService],
   bootstrap: [AppComponent]

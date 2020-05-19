@@ -18,7 +18,7 @@ import { ApiService } from './services/api.service';
     AppRoutingModule,
     HttpClientModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyBTv9N60m0cJ1yQzUP9LvbgxrnJqUUn8jY'
+      apiKey: 'your google map api key'
     })
   ],
   providers: [ApiService],

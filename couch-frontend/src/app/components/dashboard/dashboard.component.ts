@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { ApiService } from '../../services/api.service';
-import { BAR_OPTIONS, PIE_OPTIONS, SCATTER_OPTIONS } from '../../shared/constants';
+import { PIE_OPTIONS } from '../../shared/constants';
 
 import * as Highcharts from 'highcharts';
 
@@ -19,86 +19,105 @@ noData(Highcharts);
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
 
-  scatterOptions: any = SCATTER_OPTIONS;
-  barOptions: any = BAR_OPTIONS;
   pieOptions: any = PIE_OPTIONS;
-
-  tweetData = [];
-  displayTweets = [];
-  fetchedRows = [];
-  currentPageNo = 0;
-
-  // latitude = 22.3039;
-  // longitude = 70.8022;
   mapType = 'roadmap';
-  selectedMarker;
-  markers = [
-    // dummy coordinates
-    { lat: 22.33159, lng: 105.63233, alpha: 1 },
-    { lat: 7.92658, lng: -12.05228, alpha: 1 },
-    { lat: 48.75606, lng: -118.859, alpha: 1 },
-    { lat: 5.19334, lng: -67.03352, alpha: 1 },
-    { lat: 12.09407, lng: 26.31618, alpha: 1 },
-    { lat: 47.92393, lng: 78.58339, alpha: 1 }
-  ];
 
-  constructor(private apiService: ApiService) { }
+  environmentFetched = false;
+  pollutionFetched = false;
+  accidentFetched = false;
+  lavishFetched = false;
+
+  defaultCenter = { lat: -37.81743, lng: 144.96063, alpha: 0 };
+  markers = { environment: [], pollution: [], accident: [], lavish: [] };
+  dataLength = { environment: 0, pollution: 0, accident: 0, lavish: 0 };
+
+
+  constructor(
+    private elementRef: ElementRef,
+    private apiService: ApiService
+  ) { }
 
   ngOnInit() {
-    Highcharts.chart('scatterContainer', this.scatterOptions);
-    Highcharts.chart('barContainer', this.barOptions);
     Highcharts.chart('pieContainer', this.pieOptions);
+
+    this.getEnvironmentTweets();
+    this.getPollutionTweets();
+    this.getAccidentTweets();
+    this.getLavishTweets();
   }
 
-  getNextTweets() {
-    this.currentPageNo += 1;
-    this.getTweets(this.currentPageNo);
+  ngAfterViewInit() {
+    this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = '#f2f2f2';
   }
 
-  getPreviousTweets() {
-    this.currentPageNo = this.currentPageNo > 0 ? this.currentPageNo - 1 : this.currentPageNo;
-    this.setDisplayTweets();
-  }
-
-  getTweets(pageNo) {
-    if (!this.fetchedRows.includes(pageNo)) {
-      this.apiService.getTweetData(pageNo).subscribe((data: any) => {
-        this.tweetData = this.tweetData.concat(data.rows);
-        this.setDisplayTweets();
-        this.fetchedRows.push(pageNo);
+  setMarkers(view, data) {
+    if (data) {
+      const viewGeoKey = view + 'Geo';
+      data.forEach(element => {
+        if (element.key === viewGeoKey) {
+          const lat = element.value[1].coordinates[0];
+          const lng = element.value[1].coordinates[1];
+          this.markers[view].push({ lat, lng, alpha: 1 });
+        }
       });
-    } else {
-      this.setDisplayTweets();
+
+      this.dataLength[view] = data.length - this.markers[view].length;
+
+      switch (view) {
+        case 'environment':
+          this.pieOptions.series[0].data.push({ name: 'Environment Scenario', y: this.dataLength[view] });
+          break;
+
+        case 'pollution':
+          this.pieOptions.series[0].data.push({ name: 'Pollution Scenario', y: this.dataLength[view] });
+          break;
+
+        case 'accident':
+          this.pieOptions.series[0].data.push({ name: 'Accident Scenario', y: this.dataLength[view] });
+          break;
+
+        case 'lavish':
+          this.pieOptions.series[0].data.push({ name: 'Lavishness Scenario', y: this.dataLength[view] });
+          break;
+
+        default:
+          break;
+      }
+
+      if (this.environmentFetched && this.pollutionFetched && this.accidentFetched && this.lavishFetched) {
+        Highcharts.chart('pieContainer', this.pieOptions);
+      }
     }
   }
 
-  setDisplayTweets() {
-    const startIndex = this.currentPageNo * 20;
-    const endIndex = (this.currentPageNo + 1) * 20;
-    this.displayTweets = this.tweetData.slice(startIndex, endIndex);
+  getEnvironmentTweets() {
+    this.apiService.getTweets('environment').subscribe((data: any) => {
+      this.environmentFetched = true;
+      this.setMarkers('environment', data);
+    });
   }
 
-
-  addMarker(lat: number, lng: number) {
-    // alpha is the opacity of the marker
-    this.markers.push({ lat, lng, alpha: 1 });
+  getPollutionTweets() {
+    this.apiService.getTweets('pollution').subscribe((data: any) => {
+      this.pollutionFetched = true;
+      this.setMarkers('pollution', data);
+    });
   }
 
-  max(coordType: 'lat' | 'lng'): number {
-    return Math.max(...this.markers.map(marker => marker[coordType]));
+  getAccidentTweets() {
+    this.apiService.getTweets('accident').subscribe((data: any) => {
+      this.accidentFetched = true;
+      this.setMarkers('accident', data);
+    });
   }
 
-  min(coordType: 'lat' | 'lng'): number {
-    return Math.min(...this.markers.map(marker => marker[coordType]));
-  }
-
-  selectMarker(event) {
-    this.selectedMarker = {
-      lat: event.latitude,
-      lng: event.longitude
-    };
+  getLavishTweets() {
+    this.apiService.getTweets('lavish').subscribe((data: any) => {
+      this.lavishFetched = true;
+      this.setMarkers('lavish', data);
+    });
   }
 
 }

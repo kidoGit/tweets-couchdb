@@ -20,24 +20,48 @@ let skip = 0;
 const rowsPerPage = 20;
 const dbName = 'tweets';
 
-tweetRoute.route('/tweets').get((req, res) => {
-    let page = parseInt(req.query.pageNo);
-    skip = page * rowsPerPage; //
-
-    couch.get(dbName, `_design/all/_view/demo-view?limit=20&skip=${skip}`)
+tweetRoute.route('/environment-tweets').get((req, res) => { // DO NOT TOUCH!
+    couch.get(dbName, `_design/all/_view/environment-view`)
         .then((data, headers, status) => {
-            res.send(data.data)
+            console.log(data.data.rows.length)
+            res.send(data.data.rows)
         }, (err) => {
+            console.log('Environment went wrong!: ', err)
+            res.send('Environment went wrong!');
+        })
+})
+
+tweetRoute.route('/accident-tweets').get((req, res) => { // DO NOT TOUCH!
+    couch.get(dbName, `_design/all/_view/accident-view`)
+        .then((data, headers, status) => {
+            console.log(data.data.rows.length)
+            res.send(data.data.rows)
+        }, (err) => {
+            console.log('Something went wrong!')
             res.send('Something went wrong!');
         })
 })
 
-// tweetRoute.route('/create').post((req, res, next) => {});
+tweetRoute.route('/pollution-tweets').get((req, res) => { // DO NOT TOUCH!
+    couch.get(dbName, `_design/all/_view/pollution-view`)
+        .then((data, headers, status) => {
+            console.log(data.data.rows.length)
+            res.send(data.data.rows)
+        }, (err) => {
+            console.log('Something went wrong!')
+            res.send('Something went wrong!');
+        })
+})
 
-// tweetRoute.route('/read/:id').get((req, res) => {})
-
-// tweetRoute.route('/update/:id').put((req, res, next) => {})
-
-// tweetRoute.route('/delete/:id').delete((req, res, next) => {})
+tweetRoute.route('/lavishness-tweets').get((req, res) => { // DO NOT TOUCH!
+    couch.get(dbName, `_design/all/_view/lavish-view`)
+        .then((data, headers, status) => {
+            console.log(data.data.rows.length)
+            res.send(data.data.rows)
+        }, (err) => {
+            console.log('Something went wrong!')
+            res.send('Something went wrong!');
+        })
+})
 
 module.exports = tweetRoute;

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { ApiService } from '../../services/api.service';
-import { BAR_OPTIONS, PIE_OPTIONS, SCATTER_OPTIONS } from '../../shared/constants';
+import { PIE_OPTIONS } from '../../shared/constants';
 
 import * as Highcharts from 'highcharts';
 
@@ -19,132 +19,105 @@ noData(Highcharts);
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
 
-  scatterOptions: any = SCATTER_OPTIONS;
-  barOptions: any = BAR_OPTIONS;
   pieOptions: any = PIE_OPTIONS;
-
-  tweetData = [];
-  displayTweets = [];
-  fetchedRows = [];
-  currentPageNo = 0;
-  coordinates = [];
-
-  PIECHART_OPTIONS = {
-    chart: {
-      plotBackgroundColor: null,
-      plotBorderWidth: null,
-      plotShadow: false,
-      type: 'pie'
-    },
-    title: {
-      text: 'Distribution of Scenarios!'
-    },
-    tooltip: {
-      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    accessibility: {
-      point: {
-        valueSuffix: '%'
-      }
-    },
-    plotOptions: {
-      pie: {
-        allowPointSelect: true,
-        cursor: 'pointer',
-        dataLabels: {
-          enabled: true,
-          format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-        }
-      }
-    },
-    series: [{
-      name: 'Brands',
-      colorByPoint: true,
-      data: [{
-        name: 'Chrome',
-        y: 61.41,
-        sliced: true,
-        selected: true
-      }, {
-        name: 'Internet Explorer',
-        y: 11.84
-      }, {
-        name: 'Firefox',
-        y: 10.85
-      }, {
-        name: 'Edge',
-        y: 4.67
-      }, {
-        name: 'Safari',
-        y: 4.18
-      }, {
-        name: 'Sogou Explorer',
-        y: 1.64
-      }, {
-        name: 'Opera',
-        y: 1.6
-      }, {
-        name: 'QQ',
-        y: 1.2
-      }, {
-        name: 'Other',
-        y: 2.61
-      }]
-    }]
-  };
-
-  defaultCenter = { lat: -37.81743, lng: 144.96063, alpha: 0 }
-  markers = { environment: [], pollution: [], accident: [], lavish: [] }
-  dataLength = { environment: 0, pollution: 0, accident: 0, lavish: 0 }
-
-  // latitude = 22.3039;
-  // longitude = 70.8022;
   mapType = 'roadmap';
-  selectedMarker;
 
-  constructor(private apiService: ApiService) { }
+  environmentFetched = false;
+  pollutionFetched = false;
+  accidentFetched = false;
+  lavishFetched = false;
+
+  defaultCenter = { lat: -37.81743, lng: 144.96063, alpha: 0 };
+  markers = { environment: [], pollution: [], accident: [], lavish: [] };
+  dataLength = { environment: 0, pollution: 0, accident: 0, lavish: 0 };
+
+
+  constructor(
+    private elementRef: ElementRef,
+    private apiService: ApiService
+  ) { }
 
   ngOnInit() {
-    // Highcharts.chart('scatterContainer', this.scatterOptions);
-    // Highcharts.chart('barContainer', this.barOptions);
     Highcharts.chart('pieContainer', this.pieOptions);
+
+    this.getEnvironmentTweets();
+    this.getPollutionTweets();
+    this.getAccidentTweets();
+    this.getLavishTweets();
   }
 
-  getTweets(view) {
-    this.apiService.getTweets(view).subscribe((data: any) => {
-      console.log(data)
-      const viewGeoKey = view + 'Geo'
+  ngAfterViewInit() {
+    this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = '#f2f2f2';
+  }
+
+  setMarkers(view, data) {
+    if (data) {
+      const viewGeoKey = view + 'Geo';
       data.forEach(element => {
         if (element.key === viewGeoKey) {
-          const lat = element.value[1].coordinates[0]
-          const lng = element.value[1].coordinates[1]
-          this.markers[view].push({ lat, lng, alpha: 1 })
+          const lat = element.value[1].coordinates[0];
+          const lng = element.value[1].coordinates[1];
+          this.markers[view].push({ lat, lng, alpha: 1 });
         }
       });
-      this.dataLength[view] = data.length - this.markers[view].length
-      this.tweetData = this.tweetData.concat(data.rows);
+
+      this.dataLength[view] = data.length - this.markers[view].length;
+
+      switch (view) {
+        case 'environment':
+          this.pieOptions.series[0].data.push({ name: 'Environment Scenario', y: this.dataLength[view] });
+          break;
+
+        case 'pollution':
+          this.pieOptions.series[0].data.push({ name: 'Pollution Scenario', y: this.dataLength[view] });
+          break;
+
+        case 'accident':
+          this.pieOptions.series[0].data.push({ name: 'Accident Scenario', y: this.dataLength[view] });
+          break;
+
+        case 'lavish':
+          this.pieOptions.series[0].data.push({ name: 'Lavishness Scenario', y: this.dataLength[view] });
+          break;
+
+        default:
+          break;
+      }
+
+      if (this.environmentFetched && this.pollutionFetched && this.accidentFetched && this.lavishFetched) {
+        Highcharts.chart('pieContainer', this.pieOptions);
+      }
+    }
+  }
+
+  getEnvironmentTweets() {
+    this.apiService.getTweets('environment').subscribe((data: any) => {
+      this.environmentFetched = true;
+      this.setMarkers('environment', data);
     });
   }
 
-  // addMarker(lat: number, lng: number) {
-  //   // alpha is the opacity of the marker
-  //   this.markers.push({ lat, lng, alpha: 1 });
-  // }
+  getPollutionTweets() {
+    this.apiService.getTweets('pollution').subscribe((data: any) => {
+      this.pollutionFetched = true;
+      this.setMarkers('pollution', data);
+    });
+  }
 
-  // max(coordType: 'lat' | 'lng'): number {
-  //   return Math.max(...this.markers.map(marker => marker[coordType]));
-  // }
+  getAccidentTweets() {
+    this.apiService.getTweets('accident').subscribe((data: any) => {
+      this.accidentFetched = true;
+      this.setMarkers('accident', data);
+    });
+  }
 
-  // min(coordType: 'lat' | 'lng'): number {
-  //   return Math.min(...this.markers.map(marker => marker[coordType]));
-  // }
+  getLavishTweets() {
+    this.apiService.getTweets('lavish').subscribe((data: any) => {
+      this.lavishFetched = true;
+      this.setMarkers('lavish', data);
+    });
+  }
 
-  // selectMarker(event) {
-  //   this.selectedMarker = {
-  //     lat: event.latitude,
-  //     lng: event.longitude
-  //   };
-  // }
 }

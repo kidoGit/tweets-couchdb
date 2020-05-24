@@ -29,76 +29,122 @@ export class DashboardComponent implements OnInit {
   displayTweets = [];
   fetchedRows = [];
   currentPageNo = 0;
+  coordinates = [];
+
+  PIECHART_OPTIONS = {
+    chart: {
+      plotBackgroundColor: null,
+      plotBorderWidth: null,
+      plotShadow: false,
+      type: 'pie'
+    },
+    title: {
+      text: 'Distribution of Scenarios!'
+    },
+    tooltip: {
+      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+      point: {
+        valueSuffix: '%'
+      }
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+        }
+      }
+    },
+    series: [{
+      name: 'Brands',
+      colorByPoint: true,
+      data: [{
+        name: 'Chrome',
+        y: 61.41,
+        sliced: true,
+        selected: true
+      }, {
+        name: 'Internet Explorer',
+        y: 11.84
+      }, {
+        name: 'Firefox',
+        y: 10.85
+      }, {
+        name: 'Edge',
+        y: 4.67
+      }, {
+        name: 'Safari',
+        y: 4.18
+      }, {
+        name: 'Sogou Explorer',
+        y: 1.64
+      }, {
+        name: 'Opera',
+        y: 1.6
+      }, {
+        name: 'QQ',
+        y: 1.2
+      }, {
+        name: 'Other',
+        y: 2.61
+      }]
+    }]
+  };
+
+  defaultCenter = { lat: -37.81743, lng: 144.96063, alpha: 0 }
+  markers = { environment: [], pollution: [], accident: [], lavish: [] }
+  dataLength = { environment: 0, pollution: 0, accident: 0, lavish: 0 }
 
   // latitude = 22.3039;
   // longitude = 70.8022;
   mapType = 'roadmap';
   selectedMarker;
-  markers = [
-    // dummy coordinates
-    { lat: 22.33159, lng: 105.63233, alpha: 1 },
-    { lat: 7.92658, lng: -12.05228, alpha: 1 },
-    { lat: 48.75606, lng: -118.859, alpha: 1 },
-    { lat: 5.19334, lng: -67.03352, alpha: 1 },
-    { lat: 12.09407, lng: 26.31618, alpha: 1 },
-    { lat: 47.92393, lng: 78.58339, alpha: 1 }
-  ];
 
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
-    Highcharts.chart('scatterContainer', this.scatterOptions);
-    Highcharts.chart('barContainer', this.barOptions);
+    // Highcharts.chart('scatterContainer', this.scatterOptions);
+    // Highcharts.chart('barContainer', this.barOptions);
     Highcharts.chart('pieContainer', this.pieOptions);
   }
 
-  getNextTweets() {
-    this.currentPageNo += 1;
-    this.getTweets(this.currentPageNo);
-  }
-
-  getPreviousTweets() {
-    this.currentPageNo = this.currentPageNo > 0 ? this.currentPageNo - 1 : this.currentPageNo;
-    this.setDisplayTweets();
-  }
-
-  getTweets(pageNo) {
-    if (!this.fetchedRows.includes(pageNo)) {
-      this.apiService.getTweetData(pageNo).subscribe((data: any) => {
-        this.tweetData = this.tweetData.concat(data.rows);
-        this.setDisplayTweets();
-        this.fetchedRows.push(pageNo);
+  getTweets(view) {
+    this.apiService.getTweets(view).subscribe((data: any) => {
+      console.log(data)
+      const viewGeoKey = view + 'Geo'
+      data.forEach(element => {
+        if (element.key === viewGeoKey) {
+          const lat = element.value[1].coordinates[0]
+          const lng = element.value[1].coordinates[1]
+          this.markers[view].push({ lat, lng, alpha: 1 })
+        }
       });
-    } else {
-      this.setDisplayTweets();
-    }
+      this.dataLength[view] = data.length - this.markers[view].length
+      this.tweetData = this.tweetData.concat(data.rows);
+    });
   }
 
-  setDisplayTweets() {
-    const startIndex = this.currentPageNo * 20;
-    const endIndex = (this.currentPageNo + 1) * 20;
-    this.displayTweets = this.tweetData.slice(startIndex, endIndex);
-  }
+  // addMarker(lat: number, lng: number) {
+  //   // alpha is the opacity of the marker
+  //   this.markers.push({ lat, lng, alpha: 1 });
+  // }
 
+  // max(coordType: 'lat' | 'lng'): number {
+  //   return Math.max(...this.markers.map(marker => marker[coordType]));
+  // }
 
-  addMarker(lat: number, lng: number) {
-    // alpha is the opacity of the marker
-    this.markers.push({ lat, lng, alpha: 1 });
-  }
+  // min(coordType: 'lat' | 'lng'): number {
+  //   return Math.min(...this.markers.map(marker => marker[coordType]));
+  // }
 
-  max(coordType: 'lat' | 'lng'): number {
-    return Math.max(...this.markers.map(marker => marker[coordType]));
-  }
-
-  min(coordType: 'lat' | 'lng'): number {
-    return Math.min(...this.markers.map(marker => marker[coordType]));
-  }
-
-  selectMarker(event) {
-    this.selectedMarker = {
-      lat: event.latitude,
-      lng: event.longitude
-    };
-  }
-
+  // selectMarker(event) {
+  //   this.selectedMarker = {
+  //     lat: event.latitude,
+  //     lng: event.longitude
+  //   };
+  // }
 }

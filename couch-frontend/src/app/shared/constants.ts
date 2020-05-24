@@ -114,7 +114,7 @@ export const PIE_OPTIONS = {
         type: 'pie'
     },
     title: {
-        text: 'Browser market shares in January, 2018'
+        text: 'Distribution of Scenarios!'
     },
     tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'

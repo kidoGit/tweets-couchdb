@@ -7,14 +7,36 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
   providedIn: 'root'
 })
 export class ApiService {
-  baseUri:string = 'http://localhost:3001';
+  baseUri: string = 'http://localhost:3001';
   headers = new HttpHeaders().set('Content-Type', 'application/json');
 
   constructor(private http: HttpClient) { }
 
-  getTweetData(pageNo) {
-    return this.http.get(`${this.baseUri}/tweets?pageNo=${pageNo}`);
+  getTweets(view) {
+
+    switch (view) {
+      case 'environment':
+        return this.http.get(`${this.baseUri}/environment-tweets`);
+        break;
+
+      case 'pollution':
+        return this.http.get(`${this.baseUri}/pollution-tweets`);
+        break;
+
+      case 'accident':
+        return this.http.get(`${this.baseUri}/accident-tweets`);
+        break;
+
+      case 'lavish':
+        return this.http.get(`${this.baseUri}/lavishness-tweets`);
+        break;
+
+      default:
+        break;
+    }
   }
+
+
 
   errorMgmt(error: HttpErrorResponse) {
     let errorMessage = '';

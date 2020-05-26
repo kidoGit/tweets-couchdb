@@ -28,8 +28,45 @@ export const PIE_OPTIONS = {
         }
     },
     series: [{
-        name: 'Brands',
+        name: 'Tweets',
         colorByPoint: true,
         data: []
     }]
+};
+
+export const AURIN_MEDICARE_COLUMN = {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'AURIN Medicare Data'
+    },
+    subtitle: {
+        text: 'Source: Dataset source'
+    },
+    xAxis: {
+        categories: [],
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Percent value'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: []
 };

@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { PIE_OPTIONS } from '../../shared/constants';
+import { AURIN_MEDICARE_COLUMN } from '../../shared/constants';
 
 import * as Highcharts from 'highcharts';
 
@@ -22,6 +23,7 @@ noData(Highcharts);
 export class DashboardComponent implements OnInit, AfterViewInit {
 
   pieOptions: any = PIE_OPTIONS;
+  medicareColumnOptions: any = AURIN_MEDICARE_COLUMN;
   mapType = 'roadmap';
 
   environmentFetched = false;
@@ -32,6 +34,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   defaultCenter = { lat: -37.81743, lng: 144.96063, alpha: 0 };
   markers = { environment: [], pollution: [], accident: [], lavish: [] };
   dataLength = { environment: 0, pollution: 0, accident: 0, lavish: 0 };
+  showTab = [true, false, false, false];
 
 
   constructor(
@@ -41,11 +44,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     Highcharts.chart('pieContainer', this.pieOptions);
+    Highcharts.chart('aurinMedicareColumn', this.pieOptions);
 
     this.getEnvironmentTweets();
     this.getPollutionTweets();
     this.getAccidentTweets();
     this.getLavishTweets();
+    this.getAurinData();
   }
 
   ngAfterViewInit() {
@@ -90,6 +95,37 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         Highcharts.chart('pieContainer', this.pieOptions);
       }
     }
+  }
+
+  setActiveTab(tab) {
+    switch (tab) {
+      case 'Environment':
+        this.showTab = [true, false, false, false];
+        break;
+      case 'Accident':
+        this.showTab = [false, true, false, false];
+        break;
+      case 'Pollution':
+        this.showTab = [false, false, true, false];
+        break;
+      case 'Lavishness':
+        this.showTab = [false, false, false, true];
+        break;
+      default:
+        this.showTab = [true, false, false, false];
+    }
+  }
+
+  getAurinData() {
+    this.apiService.getAurinData('medicare').subscribe((data: any) => {
+      const valueArr = []
+      data.forEach(element => {
+        this.medicareColumnOptions.xAxis.categories.push(element.suburb);
+        valueArr.push(element.pctValue);
+      });
+      this.medicareColumnOptions.series.push({ name: "Percent Value", data: valueArr });
+      Highcharts.chart('aurinMedicareColumn', this.medicareColumnOptions);
+    });
   }
 
   getEnvironmentTweets() {

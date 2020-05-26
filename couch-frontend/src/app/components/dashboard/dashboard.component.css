@@ -4,3 +4,7 @@
     align-items: center;
     justify-content: center;
 }
+
+.active {
+    background-color: #d1d1d1 !important;
+}

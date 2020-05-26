@@ -22,179 +22,285 @@
 </div>
 <hr>
 
-<!-- Environment - Row 1 -->
+<div class="container" style="max-width: 1400px;">
+    <h3>Tabs</h3>
+    <ul class="nav nav-tabs">
+        <li class="nav-item" style="cursor: pointer;" (click)="setActiveTab('Environment')">
+            <a class="nav-link" [ngClass]="{'active': showTab[0]}">Environment</a>
+        </li>
+        <li class="nav-item" style="cursor: pointer;" (click)="setActiveTab('Accident')">
+            <a class="nav-link" [ngClass]="{'active': showTab[1]}">Accident</a>
+        </li>
+        <li class="nav-item" style="cursor: pointer;" (click)="setActiveTab('Pollution')">
+            <a class="nav-link" [ngClass]="{'active': showTab[2]}">Pollution</a>
+        </li>
+        <li class="nav-item" style="cursor: pointer;" (click)="setActiveTab('Lavishness')">
+            <a class="nav-link" [ngClass]="{'active': showTab[3]}">Lavishness</a>
+        </li>
+    </ul>
+    <br>
+    <div [hidden]="!showTab[0]">
+        <!-- Environment - Row 1 -->
 
-<div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-3">
-        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention
-            to featured content or information.</p>
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-6">
-        <div *ngIf="environmentFetched" class="card" style="width: 100%; background-color: #d1d1d1;">
-            <agm-map [latitude]="defaultCenter.lat" [longitude]="defaultCenter.lng"
-                style="height: 500px; margin: 20px 20px 0px 20px;" [mapTypeId]='mapType' [zoom]="10"
-                [scrollwheel]="null">
-                <agm-marker *ngFor="let marker of markers.environment" [latitude]="marker.lat" [longitude]="marker.lng"
-                    [opacity]="marker.alpha" [markerDraggable]="true">
-                </agm-marker>
-            </agm-map>
-            <div class="card-body">
-                <h5 class="card-title">Environment Map</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                    card's content.</p>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="jumbotron" style="background-color: white;">
+                    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra
+                        attention
+                        to featured content or information.</p>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div *ngIf="environmentFetched" class="card" style="width: 100%; background-color: #d1d1d1;">
+                    <agm-map [latitude]="defaultCenter.lat" [longitude]="defaultCenter.lng"
+                        style="height: 400px; margin: 20px 20px 0px 20px;" [mapTypeId]='mapType' [zoom]="10"
+                        [scrollwheel]="null">
+                        <agm-marker *ngFor="let marker of markers.environment" [latitude]="marker.lat"
+                            [longitude]="marker.lng" [opacity]="marker.alpha" [markerDraggable]="true">
+                        </agm-marker>
+                    </agm-map>
+                    <div class="card-body">
+                        <h5 class="card-title">Environment Map</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Environment - Row 2 -->
+
+        <div class="row" style="margin-top: 70px; margin-bottom: 50px;">
+            <div class="col-md-6">
+                <div class="card" style="width: 100%;">
+                    <img src="../../../assets/Medicare.png" style="width: 100%; padding: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">IMage 1</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card" style="width: 100%;">
+                    <div id="aurinMedicareColumn"></div>
+                    <div class="card-body">
+                        <h5 class="card-title">Chart 1</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-1"></div>
-</div>
 
-<!-- Environment - Row 2 -->
 
-<div class="row">
-    <div class="col-md-6">
-        <img src="../../../assets/Medicare.png" style="width: 100%;">
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-4">
-        <div id="aurinMedicareColumn"></div>
-    </div>
-    <div class="col-md-1"></div>
-</div>
+    <div [hidden]="!showTab[1]">
+        <!-- Accidents - Row 1 -->
 
-<!-- Accidents - Row 1 -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="jumbotron" style="background-color: white;">
+                    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra
+                        attention
+                        to featured content or information.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div *ngIf="accidentFetched" class="card" style="width: 100%; background-color: #d1d1d1;">
+                    <agm-map [latitude]="defaultCenter.lat" [longitude]="defaultCenter.lng"
+                        style="height: 500px; margin: 20px 20px 0px 20px;" [mapTypeId]='mapType' [zoom]="10"
+                        [scrollwheel]="null">
+                        <agm-marker *ngFor="let marker of markers.accident" [latitude]="marker.lat"
+                            [longitude]="marker.lng" [opacity]="marker.alpha" [markerDraggable]="true">
+                        </agm-marker>
+                    </agm-map>
+                    <div class="card-body">
+                        <h5 class="card-title">Accident Map</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-3">
-        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention
-            to featured content or information.</p>
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-6">
-        <div *ngIf="accidentFetched" class="card" style="width: 100%; background-color: #d1d1d1;">
-            <agm-map [latitude]="defaultCenter.lat" [longitude]="defaultCenter.lng"
-                style="height: 500px; margin: 20px 20px 0px 20px;" [mapTypeId]='mapType' [zoom]="10"
-                [scrollwheel]="null">
-                <agm-marker *ngFor="let marker of markers.accident" [latitude]="marker.lat" [longitude]="marker.lng"
-                    [opacity]="marker.alpha" [markerDraggable]="true">
-                </agm-marker>
-            </agm-map>
-            <div class="card-body">
-                <h5 class="card-title">Accident Map</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                    card's content.</p>
+        <!-- Accidents - Row 2 -->
+
+        <div class="row" style="margin-top: 70px; margin-bottom: 70px;">
+            <div class="col-md-6">
+                <div class="card" style="width: 100%;">
+                    <img src="../../../assets/Crashes.png" style="width: 100%; padding: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">IMage 4</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content sdlfjdsk jsjdlkfjsdkl fjsjdfkljf skdfjskldfj lkjsdklfjsdlfj kljsdklfjsdkl
+                            jskldfjskldfjsld kjsdklfjsdlfkj.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card" style="width: 100%;">
+                    <img src="../../../assets/AccidentsGraph.PNG" style="width: 100%; padding: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">IMage 5</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accidents - Row 3 -->
+
+        <div class="row" style="margin-bottom: 50px;">
+            <div class="col-md-6">
+                <div class="card" style="width: 100%;">
+                    <img src="../../../assets/Traffic.PNG" style="width: 100%; padding: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">IMage 4</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content sdlfjdsk jsjdlkfjsdkl fjsjdfkljf skdfjskldfj lkjsdklfjsdlfj kljsdklfjsdkl
+                            jskldfjskldfjsld kjsdklfjsdlfkj.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card" style="width: 100%;">
+                    <img src="../../../assets/TrafficGraph.PNG" style="width: 100%; padding: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">IMage 5</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-1"></div>
-</div>
 
-<!-- Accidents - Row 2 -->
 
-<div class="row">
-    <div class="col-md-6">
-        <img src="../../../assets/Crashes.png" style="width: 100%;">
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-4">
-        <img src="../../../assets/AccidentsGraph.PNG" style="width: 100%;">
-    </div>
-    <div class="col-md-1"></div>
-</div>
+    <div [hidden]="!showTab[2]">
+        <!-- Pollution - Row 1 -->
 
-<!-- Accidents - Row 3 -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="jumbotron" style="background-color: white;">
+                    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra
+                        attention
+                        to featured content or information.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div *ngIf="pollutionFetched" class="card" style="width: 100%; background-color: #d1d1d1;">
+                    <agm-map [latitude]="defaultCenter.lat" [longitude]="defaultCenter.lng"
+                        style="height: 500px; margin: 20px 20px 0px 20px;" [mapTypeId]='mapType' [zoom]="10"
+                        [scrollwheel]="null">
+                        <agm-marker *ngFor="let marker of markers.pollution" [latitude]="marker.lat"
+                            [longitude]="marker.lng" [opacity]="marker.alpha" [markerDraggable]="true">
+                        </agm-marker>
+                    </agm-map>
+                    <div class="card-body">
+                        <h5 class="card-title">Pollution Map</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
 
-<div class="row">
-    <div class="col-md-6">
-        <img src="../../../assets/Traffic.PNG" style="width: 100%;">
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-4">
-        <img src="../../../assets/TrafficGraph.PNG" style="width: 100%;">
-    </div>
-    <div class="col-md-1"></div>
-</div>
+        <!-- Pollution - Row 2 -->
 
-<!-- Pollution - Row 1 -->
-
-<div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-3">
-        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention
-            to featured content or information.</p>
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-6">
-        <div *ngIf="pollutionFetched" class="card" style="width: 100%; background-color: #d1d1d1;">
-            <agm-map [latitude]="defaultCenter.lat" [longitude]="defaultCenter.lng"
-                style="height: 500px; margin: 20px 20px 0px 20px;" [mapTypeId]='mapType' [zoom]="10"
-                [scrollwheel]="null">
-                <agm-marker *ngFor="let marker of markers.pollution" [latitude]="marker.lat" [longitude]="marker.lng"
-                    [opacity]="marker.alpha" [markerDraggable]="true">
-                </agm-marker>
-            </agm-map>
-            <div class="card-body">
-                <h5 class="card-title">Pollution Map</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                    card's content.</p>
+        <div class="row" style="margin-top: 70px; margin-bottom: 50px;">
+            <div class="col-md-6">
+                <div class="card" style="width: 100%;">
+                    <img src="../../../assets/Pollution.png" style="width: 100%; padding: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">IMage 5</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card" style="width: 100%;">
+                    <img src="../../../assets/PollutionGraph.PNG" style="width: 100%; padding: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">IMage 5</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-1"></div>
-</div>
+    <div [hidden]="!showTab[3]">
+        <!-- Lavishness - Row 1 -->
 
-<!-- Pollution - Row 2 -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="jumbotron" style="background-color: white;">
+                    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra
+                        attention
+                        to featured content or information.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div *ngIf="lavishFetched" class="card" style="width: 100%; background-color: #d1d1d1;">
+                    <agm-map [latitude]="defaultCenter.lat" [longitude]="defaultCenter.lng"
+                        style="height: 500px; margin: 20px 20px 0px 20px;" [mapTypeId]='mapType' [zoom]="10"
+                        [scrollwheel]="null">
+                        <agm-marker *ngFor="let marker of markers.lavish" [latitude]="marker.lat"
+                            [longitude]="marker.lng" [opacity]="marker.alpha" [markerDraggable]="true">
+                        </agm-marker>
+                    </agm-map>
+                    <div class="card-body">
+                        <h5 class="card-title">Lavishness Map</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
 
-<div class="row">
-    <div class="col-md-6">
-        <img src="../../../assets/Pollution.png" style="width: 100%;">
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-4">
-        <img src="../../../assets/PollutionGraph.PNG" style="width: 100%;">
-    </div>
-    <div class="col-md-1"></div>
-</div>
+        <!-- Lavishness - Row 2 -->
 
-<!-- Lavishness - Row 1 -->
-
-<div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-3">
-        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention
-            to featured content or information.</p>
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-6">
-        <div *ngIf="lavishFetched" class="card" style="width: 100%; background-color: #d1d1d1;">
-            <agm-map [latitude]="defaultCenter.lat" [longitude]="defaultCenter.lng"
-                style="height: 500px; margin: 20px 20px 0px 20px;" [mapTypeId]='mapType' [zoom]="10"
-                [scrollwheel]="null">
-                <agm-marker *ngFor="let marker of markers.lavish" [latitude]="marker.lat" [longitude]="marker.lng"
-                    [opacity]="marker.alpha" [markerDraggable]="true">
-                </agm-marker>
-            </agm-map>
-            <div class="card-body">
-                <h5 class="card-title">Lavishness Map</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                    card's content.</p>
+        <div class="row" style="margin-top: 70px; margin-bottom: 50px;">
+            <div class="col-md-6">
+                <div class="card" style="width: 100%;">
+                    <img src="../../../assets/Income.png" style="width: 100%; padding: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">IMage 5</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card" style="width: 100%;">
+                    <img src="../../../assets/LavishGraph.PNG" style="width: 100%; padding: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">IMage 5</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-1"></div>
-</div>
-
-<!-- Lavishness - Row 2 -->
-
-<div class="row">
-    <div class="col-md-6">
-        <img src="../../../assets/Income.png" style="width: 100%;">
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-4">
-        <img src="../../../assets/LavishGraph.PNG" style="width: 100%;">
-    </div>
-    <div class="col-md-1"></div>
 </div>

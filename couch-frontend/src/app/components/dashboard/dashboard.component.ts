@@ -34,6 +34,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   defaultCenter = { lat: -37.81743, lng: 144.96063, alpha: 0 };
   markers = { environment: [], pollution: [], accident: [], lavish: [] };
   dataLength = { environment: 0, pollution: 0, accident: 0, lavish: 0 };
+  showTab = [true, false, false, false];
 
 
   constructor(
@@ -96,9 +97,27 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
   }
 
+  setActiveTab(tab) {
+    switch (tab) {
+      case 'Environment':
+        this.showTab = [true, false, false, false];
+        break;
+      case 'Accident':
+        this.showTab = [false, true, false, false];
+        break;
+      case 'Pollution':
+        this.showTab = [false, false, true, false];
+        break;
+      case 'Lavishness':
+        this.showTab = [false, false, false, true];
+        break;
+      default:
+        this.showTab = [true, false, false, false];
+    }
+  }
+
   getAurinData() {
     this.apiService.getAurinData('medicare').subscribe((data: any) => {
-      console.log(data)
       const valueArr = []
       data.forEach(element => {
         this.medicareColumnOptions.xAxis.categories.push(element.suburb);
@@ -106,7 +125,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       });
       this.medicareColumnOptions.series.push({ name: "Percent Value", data: valueArr });
       Highcharts.chart('aurinMedicareColumn', this.medicareColumnOptions);
-      console.log(this.medicareColumnOptions);
     });
   }
 

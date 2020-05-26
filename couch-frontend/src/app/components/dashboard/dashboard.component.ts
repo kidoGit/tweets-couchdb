@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { PIE_OPTIONS } from '../../shared/constants';
+import { AURIN_MEDICARE_COLUMN } from '../../shared/constants';
 
 import * as Highcharts from 'highcharts';
 
@@ -22,6 +23,7 @@ noData(Highcharts);
 export class DashboardComponent implements OnInit, AfterViewInit {
 
   pieOptions: any = PIE_OPTIONS;
+  medicareColumnOptions: any = AURIN_MEDICARE_COLUMN;
   mapType = 'roadmap';
 
   environmentFetched = false;
@@ -41,11 +43,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     Highcharts.chart('pieContainer', this.pieOptions);
+    Highcharts.chart('aurinMedicareColumn', this.pieOptions);
 
     this.getEnvironmentTweets();
     this.getPollutionTweets();
     this.getAccidentTweets();
     this.getLavishTweets();
+    this.getAurinData();
   }
 
   ngAfterViewInit() {
@@ -90,6 +94,20 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         Highcharts.chart('pieContainer', this.pieOptions);
       }
     }
+  }
+
+  getAurinData() {
+    this.apiService.getAurinData('medicare').subscribe((data: any) => {
+      console.log(data)
+      const valueArr = []
+      data.forEach(element => {
+        this.medicareColumnOptions.xAxis.categories.push(element.suburb);
+        valueArr.push(element.pctValue);
+      });
+      this.medicareColumnOptions.series.push({ name: "Percent Value", data: valueArr });
+      Highcharts.chart('aurinMedicareColumn', this.medicareColumnOptions);
+      console.log(this.medicareColumnOptions);
+    });
   }
 
   getEnvironmentTweets() {

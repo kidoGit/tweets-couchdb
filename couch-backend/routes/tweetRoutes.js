@@ -16,6 +16,26 @@ const couch = new NodeCouchDb({
 //     console.log(dbs);
 // })
 
+tweetRoute.route('/medicare-aurin').get((req, res) => { // DO NOT TOUCH!
+    couch.get("aurin_medicare", `_design/all/_view/medicare-view`)
+        .then(async (data, headers, status) => {
+            if (data.data.rows) {
+                let graphData = []
+                await data.data.rows.forEach(element => {
+                    const suburb = element.value[0];
+                    const pctValue = element.value[1];
+                    graphData.push({ suburb, pctValue });
+                });
+                graphData = graphData.sort((a, b) => (a.pctValue < b.pctValue) ? 1 : ((b.pctValue < a.pctValue) ? -1 : 0));
+                console.log(graphData.slice(0, 5));
+                res.send(graphData.slice(0, 5));
+            }
+        }, (err) => {
+            console.log('Environment went wrong!: ', err);
+            res.send('Environment went wrong!');
+        })
+})
+
 let skip = 0;
 const rowsPerPage = 20;
 const dbName = 'tweets';

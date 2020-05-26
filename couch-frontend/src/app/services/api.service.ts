@@ -36,7 +36,16 @@ export class ApiService {
     }
   }
 
+  getAurinData(view) {
+    switch (view) {
+      case 'medicare':
+        return this.http.get(`${this.baseUri}/medicare-aurin`);
+        break;
 
+      default:
+        break;
+    }
+  }
 
   errorMgmt(error: HttpErrorResponse) {
     let errorMessage = '';
